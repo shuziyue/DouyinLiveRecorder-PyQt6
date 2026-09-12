@@ -1,0 +1,360 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>抖音直播录制工具</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 24px;
+        }
+        .header h1 {
+            font-size: 26px;
+            font-weight: 600;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .header p {
+            font-size: 13px;
+            opacity: 0.85;
+            margin-top: 6px;
+        }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin-bottom: 18px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+        }
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-title .icon { font-size: 18px; }
+        .form-group {
+            margin-bottom: 14px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            color: #555;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        .form-control, .form-select {
+            width: 100%;
+            padding: 9px 14px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #333;
+            background: #fafafa;
+            transition: all 0.2s;
+            outline: none;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #764ba2;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(118,75,162,0.1);
+        }
+        .row {
+            display: flex;
+            gap: 14px;
+        }
+        .row .form-group { flex: 1; }
+        .btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+        }
+        .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .btn:active { transform: translateY(0); }
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+        .btn-danger {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+        }
+        .btn-warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        .btn-sm {
+            padding: 5px 14px;
+            font-size: 12px;
+            border-radius: 8px;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+        .input-group .form-control { flex: 1; }
+        .url-list {
+            list-style: none;
+            margin-top: 14px;
+        }
+        .url-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            background: #f8f9ff;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #444;
+            word-break: break-all;
+        }
+        .url-item .url-text { flex: 1; margin-right: 10px; }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .status-recording {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-stopped {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+        .status-recording .status-dot {
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        .control-buttons {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .control-buttons .spacer { flex: 1; }
+        .tip {
+            margin-top: 14px;
+            padding: 12px 16px;
+            background: #fff8e1;
+            border-radius: 10px;
+            font-size: 12px;
+            color: #795548;
+            line-height: 1.6;
+        }
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            margin: 18px 0 12px 0;
+            padding-left: 10px;
+            border-left: 3px solid #764ba2;
+        }
+        .footer {
+            text-align: center;
+            color: rgba(255,255,255,0.7);
+            font-size: 12px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎬 抖音直播录制工具</h1>
+            <p>DouyinLiveRecorder v4.0.7 | 桌面版</p>
+        </div>
+
+        <!-- 直播地址管理 -->
+        <div class="card">
+            <div class="card-title"><span class="icon">📺</span> 直播地址管理</div>
+            <form action="/add_url" method="post">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="url" placeholder="请输入抖音直播间地址" required>
+                    <button type="submit" class="btn btn-primary">添加</button>
+                </div>
+            </form>
+            <ul class="url-list">
+                {% for url in urls %}
+                <li class="url-item">
+                    <span class="url-text">{{ url }}</span>
+                    <form action="/delete_url" method="post" style="display: inline;">
+                        <input type="hidden" name="url" value="{{ url }}">
+                        <button type="submit" class="btn btn-danger btn-sm">删除</button>
+                    </form>
+                </li>
+                {% else %}
+                <li class="url-item" style="justify-content: center; color: #999;">暂无直播地址</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- 录制配置 -->
+        <div class="card">
+            <div class="card-title"><span class="icon">⚙️</span> 录制配置</div>
+            <form action="/update_config" method="post">
+                <div class="row">
+                    <div class="form-group">
+                        <label>视频质量</label>
+                        <select class="form-select" name="video_record_quality">
+                            <option value="原画" {% if video_record_quality == "原画" %}selected{% endif %}>原画</option>
+                            <option value="蓝光" {% if video_record_quality == "蓝光" %}selected{% endif %}>蓝光</option>
+                            <option value="超清" {% if video_record_quality == "超清" %}selected{% endif %}>超清</option>
+                            <option value="高清" {% if video_record_quality == "高清" %}selected{% endif %}>高清</option>
+                            <option value="标清" {% if video_record_quality == "标清" %}selected{% endif %}>标清</option>
+                            <option value="流畅" {% if video_record_quality == "流畅" %}selected{% endif %}>流畅</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>保存格式</label>
+                        <select class="form-select" name="video_save_type">
+                            <option value="ts" {% if video_save_type == "ts" %}selected{% endif %}>TS</option>
+                            <option value="flv" {% if video_save_type == "flv" %}selected{% endif %}>FLV</option>
+                            <option value="mp4" {% if video_save_type == "mp4" %}selected{% endif %}>MP4</option>
+                            <option value="mkv" {% if video_save_type == "mkv" %}selected{% endif %}>MKV</option>
+                            <option value="mp3音频" {% if video_save_type == "mp3音频" %}selected{% endif %}>MP3音频</option>
+                            <option value="m4a音频" {% if video_save_type == "m4a音频" %}selected{% endif %}>M4A音频</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="section-title">分段录制</div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>分段录制</label>
+                        <select class="form-select" name="split_video_by_time">
+                            <option value="是" {% if split_video_by_time == "是" %}selected{% endif %}>开启</option>
+                            <option value="否" {% if split_video_by_time == "否" %}selected{% endif %}>关闭</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>分段时间(秒)</label>
+                        <input type="number" class="form-control" name="split_time" value="{{ split_time }}" min="60" max="3600">
+                    </div>
+                </div>
+
+                <div class="section-title">转码设置</div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>自动转MP4</label>
+                        <select class="form-select" name="converts_to_mp4">
+                            <option value="是" {% if converts_to_mp4 == "是" %}selected{% endif %}>是</option>
+                            <option value="否" {% if converts_to_mp4 == "否" %}selected{% endif %}>否</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>H264重编码</label>
+                        <select class="form-select" name="converts_to_h264">
+                            <option value="是" {% if converts_to_h264 == "是" %}selected{% endif %}>是</option>
+                            <option value="否" {% if converts_to_h264 == "否" %}selected{% endif %}>否</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>转码后删原文件</label>
+                        <select class="form-select" name="delete_origin_file">
+                            <option value="是" {% if delete_origin_file == "是" %}selected{% endif %}>是</option>
+                            <option value="否" {% if delete_origin_file == "否" %}selected{% endif %}>否</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>生成时间字幕</label>
+                        <select class="form-select" name="create_time_file">
+                            <option value="是" {% if create_time_file == "是" %}selected{% endif %}>是</option>
+                            <option value="否" {% if create_time_file == "否" %}selected{% endif %}>否</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">💾 保存配置</button>
+            </form>
+        </div>
+
+        <!-- 录制控制 -->
+        <div class="card">
+            <div class="card-title"><span class="icon">🎮</span> 录制控制</div>
+            <div style="margin-bottom: 16px;">
+                <span class="status-badge {% if is_recording %}status-recording{% else %}status-stopped{% endif %}">
+                    <span class="status-dot"></span>
+                    {% if is_recording %}录制中{% else %}未录制{% endif %}
+                </span>
+            </div>
+            <div class="control-buttons">
+                <form action="/start_recording" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-success" {% if is_recording %}disabled{% endif %}>▶ 开始录制</button>
+                </form>
+                <form action="/stop_recording" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-danger" {% if not is_recording %}disabled{% endif %}>⏹ 停止录制</button>
+                </form>
+                <div class="spacer"></div>
+                <form action="/shutdown" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-warning">退出程序</button>
+                </form>
+            </div>
+            <div class="tip">
+                💡 录制的视频保存在程序目录下的 <b>downloads</b> 文件夹中。<br>
+                支持同时录制多个直播间，添加多个地址即可。
+            </div>
+        </div>
+
+        <div class="footer">
+            DouyinLiveRecorder v4.0.7 | 桌面版
+        </div>
+    </div>
+    <script>
+        // 表单提交前保存滚动位置
+        document.querySelectorAll('form').forEach(function(form) {
+            form.addEventListener('submit', function() {
+                sessionStorage.setItem('scrollPosition', window.scrollY);
+            });
+        });
+        // 页面加载后恢复滚动位置
+        window.addEventListener('load', function() {
+            var scrollPosition = sessionStorage.getItem('scrollPosition');
+            if (scrollPosition) {
+                window.scrollTo(0, parseInt(scrollPosition));
+                sessionStorage.removeItem('scrollPosition');
+            }
+        });
+    </script>
+</body>
+</html>
