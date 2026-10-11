@@ -189,7 +189,13 @@ python tools/make_icon.py
 ## 🐛 已知问题
 
 1. **火绒报毒**：PyInstaller onefile 模式可能被火绒报 TrojanDropper，建议使用 onedir 模式（本项目默认 onedir）
-2. **抖音 Cookie**：部分直播间需要登录 Cookie 才能获取高清流，可在 `config/config.ini` 的 `[Cookie]` 部分配置
+2. **抖音 Cookie**：部分直播间需要登录 Cookie 才能获取高清流。
+   **本仓库不附带任何人的 Cookie**（公开仓库里放 Cookie 等于把账号交出去），请自己获取：
+   - 程序里已经内置了原作者提供的公共 `ttwid`（见 `src/spider.py`），**大多数直播间靠它就能取到流**，通常不用自己配；
+   - 需要自己的 Cookie 时：浏览器登录抖音网页版 → `F12` → `Application` → `Cookies`，把 `ttwid`、`passport_csrf_token` 等字段拼成一行；
+     也可以直接参考**原作者项目** [ihmily/DouyinLiveRecorder](https://github.com/ihmily/DouyinLiveRecorder) 里的说明；
+   - 填到 `config/config.ini` 的 `[Cookie]` → `抖音cookie =`（软件界面里也能填）。
+   ⚠️ Cookie 是你的登录凭证，**不要提交到公开仓库**（本仓库 `.gitignore` 已排除 `logs/`、`backup_config/`、`config/ui.ini`）。
 3. **ffmpeg 路径**：确保 `ffmpeg.exe` 在 `ffmpeg/` 目录下，或已添加到系统 PATH
 
 ---
