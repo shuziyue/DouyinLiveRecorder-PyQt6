@@ -39,6 +39,15 @@ datas = [
     ('src/javascript', 'src/javascript'),
     ('i18n', 'i18n'),
     ('douyin_only.py', '.'),
+    ('assets', 'assets'),
+]
+
+# 运行时不用的重量级库：程序代码里没有任何 import，纯属被连带打进来，
+# 排掉可以少打包约 100MB（pandas/scipy/numpy/matplotlib/PIL）。
+# 以后如果要加图表/数据分析功能，把用到的名字从这里删掉再重新打包即可。
+excludes = [
+    'pandas', 'matplotlib', 'scipy', 'numpy', 'PIL', 'Pillow',
+    'IPython', 'jupyter', 'notebook', 'pytest', 'sphinx', 'docutils',
 ]
 
 # ========== 主程序（PyQt6 GUI） ==========
@@ -51,7 +60,7 @@ a = Analysis(
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=[],
+    excludes=excludes,
     noarchive=False,
     optimize=0,
 )
@@ -63,6 +72,7 @@ exe = EXE(
     [],
     exclude_binaries=True,
     name='抖音直播录制工具',
+    icon='assets/icon.ico',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -87,7 +97,7 @@ a2 = Analysis(
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=[],
+    excludes=excludes,
     noarchive=False,
     optimize=0,
 )

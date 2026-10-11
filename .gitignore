@@ -1,0 +1,22 @@
+# 运行环境与构建产物
+.venv/
+build/
+dist/
+__pycache__/
+*.pyc
+.idea/
+
+# 体积大的运行文件（不要进仓库）
+ffmpeg/
+ffmpeg_旧版备份_*/
+downloads/
+_internal/
+*.zip
+
+# 日志与配置备份（含 cookie，别提交）
+logs/*
+!logs/.gitkeep
+backup_config/*
+!backup_config/.gitkeep
+config/ui.ini
+.*_probe_*

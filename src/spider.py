@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+﻿# -*- encoding: utf-8 -*-
 
 """
 Author: Hmily
@@ -145,7 +145,10 @@ async def get_douyin_app_stream_data(url: str, proxy_addr: OptionalStr = None, c
                     room_data['stream_url']['hls_pull_url_map'] = {**origin_m3u8, **hls_pull_url_map}
                     room_data['stream_url']['flv_pull_url'] = {**origin_flv, **flv_pull_url}
     except Exception as e:
-        print(f"Error message: {e} Error line: {e.__traceback__.tb_lineno}")
+        error_msg = f"Error message: {e} Error line: {e.__traceback__.tb_lineno}"
+        print(error_msg)
+        from src.utils import logger
+        logger.error(error_msg)
         room_data = {'anchor_name': ""}
     return room_data
 
@@ -182,6 +185,13 @@ async def get_douyin_web_stream_data(url: str, proxy_addr: OptionalStr = None, c
         api += "&a_bogus=" + a_bogus
         json_str = await async_req(url=api, proxy_addr=proxy_addr, headers=headers)
         json_data = json.loads(json_str)['data']
+        
+        # 检查 data 是否为空列表（主播未开播或API返回异常）
+        if not json_data.get('data') or len(json_data['data']) == 0:
+            room_status = json_data.get('status_code', -1)
+            room_message = json_data.get('status_msg', '未知错误')
+            raise RuntimeError(f"获取直播间数据失败: {room_message} (状态码: {room_status})")
+        
         room_data = json_data['data'][0]
         room_data['anchor_name'] = json_data['user']['nickname']
 
